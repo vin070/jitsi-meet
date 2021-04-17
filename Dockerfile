@@ -11,6 +11,5 @@ RUN apt-get update \
     && apt-get install -y nodejs \
     && apt-get install gcc g++ make -y \
     && apt-get install git -y \
-    && git pull https://vin070:vi4neet%40123@github.com/vin070/jitsi-meet.git \
     && npm install \
     && make
