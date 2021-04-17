@@ -3,7 +3,8 @@ FROM ubuntu:18.04
 
 WORKDIR /jitsi-ui
 
-RUN apt install curl -y \
+RUN apt-get update \
+    && apt install curl -y \
     && cd ${WORKDIR} \
     && curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh \
     && bash nodesource_setup.sh \
