@@ -1,5 +1,5 @@
 ARG JITSI_REPO=jitsi
-FROM ${JITSI_REPO}/base
+FROM ubuntu:18.04
 
 WORKDIR /jitsi-ui
 
