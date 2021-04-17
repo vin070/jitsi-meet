@@ -11,5 +11,6 @@ RUN apt-get update \
     && apt-get install -y nodejs \
     && apt-get install gcc g++ make -y \
     && apt-get install git -y \
+    && pwd \
     && npm install \
     && make
