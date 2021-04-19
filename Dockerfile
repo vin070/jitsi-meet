@@ -12,7 +12,7 @@ RUN apt-get update \
     && apt-get install gcc g++ make -y \
     && apt-get install git -y \
     && pwd \
-    && ls / \
+    && ls / 
     
 COPY . /jitsi-ui/
 RUN  cd /jitsi-ui/ \
