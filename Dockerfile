@@ -1,5 +1,5 @@
 ARG JITSI_REPO=jitsi
-FROM ubuntu:20.04
+FROM ubuntu:20.04 as build-stage
 
 WORKDIR /jitsi-ui
 
@@ -24,3 +24,9 @@ EXPOSE 80 443
 
 VOLUME ["/config", "/usr/share/jitsi-meet/transcripts"]
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
+
+#production with Nginx
+FROM nginx:1.15
+COPY --from=build-stage  /jitsi-ui/ /usr/share/nginx/html
+# Copy the default nginx.conf provided by tiangolo/node-frontend
+COPY --from=build-stage /nginx.conf /etc/nginx/conf.d/default.conf
