@@ -31,3 +31,4 @@ FROM nginx:1.15
 # Copy the default nginx.conf provided by tiangolo/node-frontend
 #COPY --from=build-stage /nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build-stage  /jitsi-ui/nginx/nginx.conf /etc/nginx/nginx.conf
+RUN cat hello
