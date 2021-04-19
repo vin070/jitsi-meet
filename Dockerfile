@@ -19,3 +19,7 @@ RUN  cd /jitsi-ui/ \
     && ls /jitsi-ui/ \
     && npm install \
     && make
+    
+EXPOSE 80 443
+
+VOLUME ["/config", "/usr/share/jitsi-meet/transcripts"]
