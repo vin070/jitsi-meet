@@ -23,3 +23,4 @@ RUN  cd /jitsi-ui/ \
 EXPOSE 80 443
 
 VOLUME ["/config", "/usr/share/jitsi-meet/transcripts"]
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
