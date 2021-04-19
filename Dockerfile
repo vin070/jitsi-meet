@@ -13,5 +13,9 @@ RUN apt-get update \
     && apt-get install git -y \
     && pwd \
     && ls / \
+    
+COPY . /jitsi-ui/
+RUN  cd /jitsi-ui/ \
+    && ls /jitsi-ui/ \
     && npm install \
     && make
