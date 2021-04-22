@@ -1,6 +1,6 @@
 ARG JITSI_REPO=jitsi
 FROM ubuntu:20.04 as build-stage
-ADD ./rootfs
+ADD ./rootfs .
 RUN cat ./rootfs/defaults/ffdhe2048.txt
 WORKDIR /jitsi-ui
 
