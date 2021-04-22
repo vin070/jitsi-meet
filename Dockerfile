@@ -1,5 +1,6 @@
 ARG JITSI_REPO=jitsi
 FROM ubuntu:20.04 as build-stage
+VOLUME ["/config", "/usr/share/jitsi-meet/transcripts"]
 RUN ls -l
 WORKDIR /jitsi-ui
 
@@ -22,7 +23,7 @@ RUN  cd /jitsi-ui/ \
     
 EXPOSE 80 443
 
-VOLUME ["/config", "/usr/share/jitsi-meet/transcripts"]
+
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
 
 #production with Nginx
