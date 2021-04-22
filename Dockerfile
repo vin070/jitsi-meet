@@ -1,6 +1,7 @@
 ARG JITSI_REPO=jitsi
 FROM ubuntu:20.04 as build-stage
 VOLUME ["/config", "/usr/share/jitsi-meet/transcripts"]
+ADD /config .
 RUN echo ${{ .Env.XMPP_BOSH_URL_BASE }}
 WORKDIR /jitsi-ui
 
