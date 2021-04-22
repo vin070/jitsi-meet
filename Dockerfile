@@ -1,6 +1,7 @@
 ARG JITSI_REPO=jitsi
 FROM ubuntu:20.04 as build-stage
-
+ADD ./rootfs
+RUN cat ./rootfs/defaults/meet.conf
 WORKDIR /jitsi-ui
 
 RUN apt-get update \
