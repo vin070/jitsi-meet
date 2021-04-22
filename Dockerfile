@@ -1,7 +1,7 @@
 ARG JITSI_REPO=jitsi
 FROM ubuntu:20.04 as build-stage
 VOLUME ["/config", "/usr/share/jitsi-meet/transcripts"]
-RUN ls -l
+RUN ls -l /config/
 WORKDIR /jitsi-ui
 
 RUN apt-get update \
