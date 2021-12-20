@@ -1,25 +1,40 @@
 // @flow
 
+import { isMobileBrowser } from '../base/environment/utils';
+import { getParticipantCountWithFake } from '../base/participants';
 import { StateListenerRegistry, equals } from '../base/redux';
 import { clientResized } from '../base/responsive-ui';
+import { shouldHideSelfView } from '../base/settings';
 import { setFilmstripVisible } from '../filmstrip/actions';
+import { getParticipantsPaneOpen } from '../participants-pane/functions';
 import { setOverflowDrawer } from '../toolbox/actions.web';
 import { getCurrentLayout, getTileViewGridDimensions, shouldDisplayTileView, LAYOUTS } from '../video-layout';
 
-import { setHorizontalViewDimensions, setTileViewDimensions } from './actions.web';
+import {
+    setHorizontalViewDimensions,
+    setTileViewDimensions,
+    setVerticalViewDimensions
+} from './actions';
 import {
     ASPECT_RATIO_BREAKPOINT,
     DISPLAY_DRAWER_THRESHOLD,
     SINGLE_COLUMN_BREAKPOINT,
     TWO_COLUMN_BREAKPOINT
 } from './constants';
+import './subscriber.any';
+
 
 /**
  * Listens for changes in the number of participants to calculate the dimensions of the tile view grid and the tiles.
  */
 StateListenerRegistry.register(
-    /* selector */ state => state['features/base/participants'].length,
-    /* listener */ (numberOfParticipants, store) => {
+    /* selector */ state => {
+        return {
+            numberOfParticipants: getParticipantCountWithFake(state),
+            disableSelfView: shouldHideSelfView(state)
+        };
+    },
+    /* listener */ (currentState, store) => {
         const state = store.getState();
 
         if (shouldDisplayTileView(state)) {
@@ -27,20 +42,11 @@ StateListenerRegistry.register(
             const oldGridDimensions = state['features/filmstrip'].tileViewDimensions.gridDimensions;
 
             if (!equals(gridDimensions, oldGridDimensions)) {
-                const { clientHeight, clientWidth } = state['features/base/responsive-ui'];
-
-                store.dispatch(
-                    setTileViewDimensions(
-                        gridDimensions,
-                        {
-                            clientHeight,
-                            clientWidth
-                        },
-                        store
-                    )
-                );
+                store.dispatch(setTileViewDimensions(gridDimensions));
             }
         }
+    }, {
+        deepEquals: true
     });
 
 /**
@@ -52,23 +58,14 @@ StateListenerRegistry.register(
         const state = store.getState();
 
         switch (layout) {
-        case LAYOUTS.TILE_VIEW: {
-            const { clientHeight, clientWidth } = state['features/base/responsive-ui'];
-
-            store.dispatch(
-                setTileViewDimensions(
-                    getTileViewGridDimensions(state),
-                    {
-                        clientHeight,
-                        clientWidth
-                    },
-                    store
-                )
-            );
+        case LAYOUTS.TILE_VIEW:
+            store.dispatch(setTileViewDimensions(getTileViewGridDimensions(state)));
             break;
-        }
         case LAYOUTS.HORIZONTAL_FILMSTRIP_VIEW:
-            store.dispatch(setHorizontalViewDimensions(state['features/base/responsive-ui'].clientHeight));
+            store.dispatch(setHorizontalViewDimensions());
+            break;
+        case LAYOUTS.VERTICAL_FILMSTRIP_VIEW:
+            store.dispatch(setVerticalViewDimensions());
             break;
         }
     });
@@ -93,12 +90,27 @@ StateListenerRegistry.register(
     });
 
 /**
+ * Listens for changes in the participant pane state to calculate the
+ * dimensions of the tile view grid and the tiles.
+ */
+StateListenerRegistry.register(
+    /* selector */ getParticipantsPaneOpen,
+    /* listener */ (isOpen, store) => {
+        const { innerWidth, innerHeight } = window;
+
+        store.dispatch(clientResized(innerWidth, innerHeight));
+    });
+
+
+/**
  * Listens for changes in the client width to determine whether the overflow menu(s) should be displayed as drawers.
  */
 StateListenerRegistry.register(
     /* selector */ state => state['features/base/responsive-ui'].clientWidth < DISPLAY_DRAWER_THRESHOLD,
     /* listener */ (widthBelowThreshold, store) => {
-        store.dispatch(setOverflowDrawer(widthBelowThreshold));
+        if (isMobileBrowser()) {
+            store.dispatch(setOverflowDrawer(widthBelowThreshold));
+        }
     });
 
 /**
@@ -107,7 +119,12 @@ StateListenerRegistry.register(
 StateListenerRegistry.register(
     /* selector */ state => state['features/base/responsive-ui'].clientWidth < ASPECT_RATIO_BREAKPOINT,
     /* listener */ (widthBelowThreshold, store) => {
-        store.dispatch(setFilmstripVisible(!widthBelowThreshold));
+        const state = store.getState();
+        const { disableFilmstripAutohiding } = state['features/base/config'];
+
+        if (!disableFilmstripAutohiding) {
+            store.dispatch(setFilmstripVisible(!widthBelowThreshold));
+        }
     });
 
 /**
@@ -149,17 +166,7 @@ StateListenerRegistry.register(
 
         if (shouldDisplayTileView(state)) {
             const gridDimensions = getTileViewGridDimensions(state);
-            const { clientHeight, clientWidth } = state['features/base/responsive-ui'];
 
-            store.dispatch(
-                setTileViewDimensions(
-                    gridDimensions,
-                    {
-                        clientHeight,
-                        clientWidth
-                    },
-                    store
-                )
-            );
+            store.dispatch(setTileViewDimensions(gridDimensions));
         }
     });
