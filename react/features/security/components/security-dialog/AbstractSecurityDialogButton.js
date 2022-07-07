@@ -56,13 +56,7 @@ export default class AbstractSecurityDialogButton<P: Props, S:*>
      * @returns {void}
      */
     _handleClick() {
-        const { _locked, handleClick } = this.props;
-
-        if (handleClick) {
-            handleClick();
-
-            return;
-        }
+        const { _locked } = this.props;
 
         sendAnalytics(createToolbarEvent('toggle.security', { enable: !_locked }));
         this._handleClickSecurityButton();
@@ -98,6 +92,6 @@ export function _mapStateToProps(state: Object) {
 
     return {
         _locked: locked || lobbyEnabled,
-        visible: enabledFlag || (enabledLobbyModeFlag || enabledMeetingPassFlag)
+        visible: enabledFlag && (enabledLobbyModeFlag || enabledMeetingPassFlag)
     };
 }

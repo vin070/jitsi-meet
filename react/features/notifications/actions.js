@@ -9,7 +9,6 @@ import { getParticipantCount } from '../base/participants/functions';
 import {
     CLEAR_NOTIFICATIONS,
     HIDE_NOTIFICATION,
-    HIDE_RAISE_HAND_NOTIFICATIONS,
     SET_NOTIFICATIONS_ENABLED,
     SHOW_NOTIFICATION
 } from './actionTypes';
@@ -72,19 +71,6 @@ export function hideNotification(uid: string) {
 }
 
 /**
- * Removes the raise hand notifications.
- *
- * @returns {{
- *     type: HIDE_RAISE_HAND_NOTIFICATIONS
- * }}
- */
-export function hideRaiseHandNotifications() {
-    return {
-        type: HIDE_RAISE_HAND_NOTIFICATIONS
-    };
-}
-
-/**
  * Stops notifications from being displayed.
  *
  * @param {boolean} enabled - Whether or not notifications should display.
@@ -123,10 +109,12 @@ export function showErrorNotification(props: Object, type: ?string) {
  */
 export function showNotification(props: Object = {}, type: ?string) {
     return function(dispatch: Function, getState: Function) {
-        const { notifications, notificationTimeouts } = getState()['features/base/config'];
+        const { disabledNotifications = [], notifications, notificationTimeouts } = getState()['features/base/config'];
         const enabledFlag = getFeatureFlag(getState(), NOTIFICATIONS_ENABLED, true);
 
         const shouldDisplay = enabledFlag
+            && !(disabledNotifications.includes(props.descriptionKey)
+                || disabledNotifications.includes(props.titleKey))
             && (!notifications
                 || notifications.includes(props.descriptionKey)
                 || notifications.includes(props.titleKey));

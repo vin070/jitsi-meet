@@ -18,15 +18,15 @@ import { Icon, IconMenu, IconWarning } from '../../base/icons';
 import JitsiStatusBar from '../../base/modal/components/JitsiStatusBar';
 import { LoadingIndicator, Text } from '../../base/react';
 import { connect } from '../../base/redux';
-import BaseTheme from '../../base/ui/components/BaseTheme.native';
+import BaseTheme from '../../base/ui/components/BaseTheme';
+import WelcomePageTabs
+    from '../../mobile/navigation/components/welcome/components/WelcomePageTabs';
 
 import {
     AbstractWelcomePage,
     _mapStateToProps as _abstractMapStateToProps,
     type Props as AbstractProps
 } from './AbstractWelcomePage';
-import VideoSwitch from './VideoSwitch';
-import WelcomePageTabs from './WelcomePageTabs';
 import styles, { PLACEHOLDER_TEXT_COLOR } from './styles';
 
 
@@ -41,11 +41,6 @@ type Props = AbstractProps & {
      * Default prop for navigating between screen components(React Navigation).
      */
     navigation: Object,
-
-    /**
-     * Default prop for navigating between screen components(React Navigation).
-     */
-    route: Object,
 
     /**
      * The translate function.
@@ -103,11 +98,10 @@ class WelcomePage extends AbstractWelcomePage<*> {
     componentDidMount() {
         super.componentDidMount();
 
-        this._updateRoomname();
-
         const {
             _headerStyles,
-            navigation
+            navigation,
+            t
         } = this.props;
 
         navigation.setOptions({
@@ -115,17 +109,30 @@ class WelcomePage extends AbstractWelcomePage<*> {
                 <TouchableOpacity
                     /* eslint-disable-next-line react/jsx-no-bind */
                     onPress = { () =>
-                        navigation.dispatch(DrawerActions.openDrawer()) }
+                        navigation.dispatch(DrawerActions.openDrawer())
+                    }
                     style = { styles.drawerNavigationIcon }>
                     <Icon
-                        size = { 20 }
+                        size = { 24 }
                         src = { IconMenu }
                         style = { _headerStyles.headerButtonIcon } />
                 </TouchableOpacity>
             ),
-            // eslint-disable-next-line react/no-multi-comp
-            headerRight: () =>
-                <VideoSwitch />
+            headerTitle: t('welcomepage.headerTitle')
+        });
+
+        navigation.addListener('focus', () => {
+            this._updateRoomname();
+        });
+
+        navigation.addListener('blur', () => {
+            this._clearTimeouts();
+
+            this.setState({
+                generatedRoomname: '',
+                insecureRoomName: false,
+                room: ''
+            });
         });
     }
 
@@ -226,7 +233,8 @@ class WelcomePage extends AbstractWelcomePage<*> {
             // $FlowExpectedError
             {
                 duration: 300,
-                toValue: focused ? 1 : 0
+                toValue: focused ? 1 : 0,
+                useNativeDriver: true
             })
             .start(animationState =>
 
@@ -359,7 +367,9 @@ class WelcomePage extends AbstractWelcomePage<*> {
                         </View>
                     </SafeAreaView>
                     {/* // $FlowExpectedError*/}
-                    <WelcomePageTabs disabled = { this.state._fieldFocused } />
+                    <WelcomePageTabs
+                        disabled = { this.state._fieldFocused }
+                        onListContainerPress = { this._onFieldBlur } />
                 </View>
             </>
         );

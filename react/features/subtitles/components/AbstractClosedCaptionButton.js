@@ -38,13 +38,7 @@ export class AbstractClosedCaptionButton
      * @returns {void}
      */
     async _handleClick() {
-        const { _requestingSubtitles, dispatch, handleClick } = this.props;
-
-        if (handleClick) {
-            handleClick();
-
-            return;
-        }
+        const { _requestingSubtitles, dispatch } = this.props;
 
         sendAnalytics(createToolbarEvent('transcribing.ccButton',
             {
@@ -97,12 +91,12 @@ export class AbstractClosedCaptionButton
  */
 export function _abstractMapStateToProps(state: Object, ownProps: Object) {
     const { _requestingSubtitles } = state['features/subtitles'];
-    const { transcribingEnabled } = state['features/base/config'];
+    const { transcription } = state['features/base/config'];
     const { isTranscribing } = state['features/transcribing'];
 
     // if the participant is moderator, it can enable transcriptions and if
     // transcriptions are already started for the meeting, guests can just show them
-    const { visible = Boolean(transcribingEnabled
+    const { visible = Boolean(transcription?.enabled
         && (isLocalParticipantModerator(state) || isTranscribing)) } = ownProps;
 
     return {

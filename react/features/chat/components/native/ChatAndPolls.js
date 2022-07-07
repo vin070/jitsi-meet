@@ -4,17 +4,16 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { Chat } from '../..';
 import {
     getClientHeight,
     getClientWidth
 } from '../../../base/modal/components/functions.native';
-import { Chat } from '../../../chat';
-import { chatTabBarOptions } from '../../../conference/components/native/ConferenceNavigatorScreenOptions';
-import { screen } from '../../../conference/components/native/routes';
+import { screen } from '../../../mobile/navigation/routes';
+import { chatTabBarOptions } from '../../../mobile/navigation/screenOptions';
 import { PollsPane } from '../../../polls/components';
 
 const ChatTab = createMaterialTopTabNavigator();
-
 
 const ChatAndPolls = () => {
     const clientHeight = useSelector(getClientHeight);
@@ -27,9 +26,7 @@ const ChatAndPolls = () => {
                 height: clientHeight,
                 width: clientWidth
             }}
-            tabBarOptions = {{
-                ...chatTabBarOptions
-            }}>
+            screenOptions = { chatTabBarOptions }>
             <ChatTab.Screen
                 component = { Chat }
                 name = { screen.conference.chatandpolls.tab.chat } />

@@ -1,95 +1,13 @@
 // @flow
 
 import { BoxModel, ColorPalette } from '../../../styles';
+import BaseTheme from '../../../ui/components/BaseTheme.native';
 
 const OVERLAY_FONT_COLOR = 'rgba(255, 255, 255, 0.6)';
 const SECONDARY_ACTION_BUTTON_SIZE = 30;
 
 export const AVATAR_SIZE = 65;
 export const UNDERLAY_COLOR = 'rgba(255, 255, 255, 0.2)';
-
-/**
- * Style classes of the PagedList-based components.
- */
-const PAGED_LIST_STYLES = {
-
-    /**
-     * Outermost container of a page in {@code PagedList}.
-     */
-    pageContainer: {
-        flex: 1
-    },
-
-    /**
-     * Style of the page indicator (Android).
-     */
-    pageIndicator: {
-        alignItems: 'center',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        padding: BoxModel.padding / 2
-    },
-
-    /**
-     * Additional style for the active indicator icon (Android).
-     */
-    pageIndicatorActive: {
-        color: ColorPalette.white
-    },
-
-    /**
-     * Container for the page indicators (Android).
-     */
-    pageIndicatorContainer: {
-        alignItems: 'center',
-        backgroundColor: ColorPalette.blue,
-        flexDirection: 'row',
-        justifyContent: 'space-around'
-    },
-
-    pageIndicatorContent: {
-        alignItems: 'center',
-        flexDirection: 'column',
-        justifyContent: 'center'
-    },
-
-    /**
-     * Icon of the page indicator (Android).
-     */
-    pageIndicatorIcon: {
-        color: ColorPalette.blueHighlight,
-        fontSize: 24
-    },
-
-    /**
-     * Label of the page indicator (Android).
-     */
-    pageIndicatorText: {
-        color: ColorPalette.blueHighlight
-    },
-
-    /**
-     * Top level style of the paged list.
-     */
-    pagedList: {
-        flex: 1
-    },
-
-    /**
-     * The paged list container View.
-     */
-    pagedListContainer: {
-        flex: 1,
-        flexDirection: 'column'
-    },
-
-    /**
-     * Disabled style for the container.
-     */
-    pagedListContainerDisabled: {
-        opacity: 0.2
-    }
-};
 
 const SECTION_LIST_STYLES = {
     /**
@@ -130,7 +48,8 @@ const SECTION_LIST_STYLES = {
         alignItems: 'center',
         flex: 1,
         flexDirection: 'row',
-        padding: 5
+        marginHorizontal: BaseTheme.spacing[3],
+        marginVertical: BaseTheme.spacing[2]
     },
 
     listItemDetails: {
@@ -162,7 +81,8 @@ const SECTION_LIST_STYLES = {
     listSectionText: {
         color: OVERLAY_FONT_COLOR,
         fontSize: 14,
-        fontWeight: 'normal'
+        fontWeight: 'normal',
+        marginLeft: BaseTheme.spacing[2]
     },
 
     pullToRefresh: {
@@ -219,6 +139,5 @@ export const BASE_INDICATOR = {
  * base/react.
  */
 export default {
-    ...PAGED_LIST_STYLES,
     ...SECTION_LIST_STYLES
 };
